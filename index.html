@@ -7,15 +7,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
     <style>
+        /* --- CORE VARIABLES & OVERRIDES --- */
         :root {
-            --bg-dark: #0a0a12;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent-purple: #8A2BE2; /* BlueViolet */
-            --accent-blue: #4169E1;   /* RoyalBlue */
-            --accent-glow: rgba(138, 43, 226, 0.6);
-            --text-light: #ffffff;
-            --text-dim: #a0a0b0;
+            /* Hintergrund & Layout */
+            --bg-deep: #050505;
+            --accent: #8A2BE2; /* Stark Purple */
+            --accent-glow: rgba(138, 43, 226, 0.5);
+            
+            /* n8n Chat ZWINGENDE Overrides */
+            --chat--color-primary: #8A2BE2 !important;
+            --chat--color-secondary: #050505 !important;
+            --chat--color-dark: #ffffff !important; /* Textfarbe in Headern */
+            --chat--color-light: #e0e0e0 !important; /* Standard Textfarbe */
+            
+            /* Chat Backgrounds - Transparent damit unser BG durchscheint */
+            --chat--container--background: transparent !important;
+            --chat--header--background: transparent !important;
+            
+            /* Nachrichten BOT */
+            --chat--message--bot--background: rgba(20, 20, 30, 0.9) !important;
+            --chat--message--bot--color: #ffffff !important;
+            --chat--message--bot--border: 1px solid rgba(138, 43, 226, 0.3) !important;
+            
+            /* Nachrichten USER */
+            --chat--message--user--background: rgba(138, 43, 226, 0.2) !important;
+            --chat--message--user--color: #ffffff !important;
+            --chat--message--user--border: 1px solid #8A2BE2 !important;
+            
+            /* Eingabefeld (Das graue Ding muss weg) */
+            --chat--input--background: #0a0a0a !important;
+            --chat--input--color: #ffffff !important;
+            --chat--input--placeholder-color: #666666 !important;
+            --chat--input--border: 1px solid #333 !important;
+            
+            /* Sende Button */
+            --chat--toggle--background: #8A2BE2 !important;
+            --chat--toggle--color: #ffffff !important;
         }
 
         body, html {
@@ -23,21 +50,15 @@
             padding: 0;
             width: 100%;
             height: 100dvh;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
+            background-color: var(--bg-deep);
+            color: #ffffff;
             font-family: 'Orbitron', sans-serif;
             overflow: hidden;
-            /* Futuristischer Hintergrund-Effekt */
+            /* Hintergrund-Netz */
             background-image: 
-                radial-gradient(circle at 20% 30%, rgba(65, 105, 225, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
-            background-size: 150% 150%;
-            animation: bgPulsate 20s ease-in-out infinite alternate;
-        }
-
-        @keyframes bgPulsate {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
+                linear-gradient(rgba(138, 43, 226, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         .app-container {
@@ -47,173 +68,127 @@
             max-width: 900px;
             margin: 0 auto;
             position: relative;
-            /* Glassmorphism Style */
-            background: var(--glass-bg);
-            border-left: 1px solid var(--glass-border);
-            border-right: 1px solid var(--glass-border);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 
-                        inset 0 0 20px rgba(138, 43, 226, 0.05);
+            background: radial-gradient(circle at center, rgba(10,10,20,0) 0%, #050505 100%);
         }
 
         /* --- Header --- */
         .header {
-            padding: 20px;
+            padding: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid var(--glass-border);
-            background: rgba(10, 10, 18, 0.6);
-            position: relative;
-            z-index: 10;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+            background: rgba(5, 5, 5, 0.9);
+            z-index: 20;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
         .brand {
             font-weight: 700;
-            font-size: 20px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-light);
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--accent);
             display: flex;
             align-items: center;
         }
 
-        .status-dot {
-            height: 10px;
-            width: 10px;
-            background-color: var(--accent-purple);
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
             border-radius: 50%;
-            margin-right: 10px;
-            box-shadow: 0 0 15px var(--accent-purple), 0 0 5px var(--accent-purple);
-            animation: statusPulsate 3s infinite ease-in-out;
+            margin-right: 12px;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s infinite;
         }
 
-        @keyframes statusPulsate {
-            0%, 100% { opacity: 0.6; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 25px var(--accent-purple), 0 0 10px var(--accent-purple); }
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(1); }
         }
 
         /* --- Chat Area --- */
         #n8n-chat {
             flex: 1;
             position: relative;
-            background: transparent;
-            z-index: 5;
+            z-index: 10;
         }
 
-        /* --- Start Screen Animation (Jarvis Style) --- */
+        /* --- Start Animation --- */
         .start-screen {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 1; /* Hinter dem Chat */
-            pointer-events: none; /* Klicks gehen durch */
-            transition: opacity 0.8s ease-out;
-        }
-
-        .start-screen.hidden {
-            opacity: 0;
-        }
-
-        .hologram-container {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .hologram {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            transform-style: preserve-3d;
-            animation: rotateHologram 20s linear infinite;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5, 5, 5, 0.8);
+            z-index: 5;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
         }
         
-        .holo-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border: 2px solid var(--accent-blue);
+        .start-screen.hidden { opacity: 0; }
+
+        .arc-reactor {
+            width: 120px;
+            height: 120px;
+            border: 4px solid var(--accent);
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--accent-blue), inset 0 0 10px var(--accent-blue);
-            opacity: 0.7;
+            position: relative;
+            box-shadow: 0 0 30px var(--accent), inset 0 0 20px var(--accent);
+            animation: rotate 10s linear infinite;
         }
-        
-        .holo-ring:nth-child(1) { width: 180px; height: 180px; border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple), inset 0 0 15px var(--accent-purple); animation: spin 12s linear infinite reverse; }
-        .holo-ring:nth-child(2) { width: 140px; height: 140px; border-width: 4px; border-style: dashed; animation: spin 8s linear infinite; }
-        .holo-ring:nth-child(3) { width: 100px; height: 100px; border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple), inset 0 0 15px var(--accent-purple); animation: spin 15s linear infinite reverse; }
 
-        .holo-core {
+        .arc-reactor::after {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #fff;
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes breathe { 0%,100% { opacity: 0.8; } 50% { opacity: 1; box-shadow: 0 0 60px #fff; } }
+
+        .system-text {
+            margin-top: 30px;
+            color: var(--accent);
+            letter-spacing: 2px;
             font-size: 14px;
-            font-weight: 700;
-            color: var(--text-light);
-            text-shadow: 0 0 10px var(--accent-purple);
-            letter-spacing: 1px;
-        }
-        
-        @keyframes spin {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
+            text-transform: uppercase;
         }
 
-        @keyframes rotateHologram {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
+        /* --- Input Area Fixes (Brute Force) --- */
+        .chat-input-container {
+            background-color: #000 !important;
+            border-top: 1px solid #333 !important;
+        }
+        textarea {
+            background-color: #111 !important;
+            color: #fff !important;
         }
 
-        .start-text {
-            font-size: 16px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
-        }
-
-        /* Mobile Fixes */
-        @media (max-width: 600px) {
-            .app-container {
-                border: none;
-                box-shadow: none;
-            }
-            .hologram-container {
-                width: 150px;
-                height: 150px;
-            }
-            .holo-ring:nth-child(1) { width: 130px; height: 130px; }
-            .holo-ring:nth-child(2) { width: 100px; height: 100px; }
-            .holo-ring:nth-child(3) { width: 70px; height: 70px; }
-        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <div class="header">
-            <div class="brand">
-                <div class="status-dot"></div>
-                F.R.I.D.A.Y.
-            </div>
+            <div class="status-pulse"></div>
+            <div class="brand">F.R.I.D.A.Y.</div>
         </div>
         
         <div class="start-screen" id="start-screen">
-            <div class="hologram-container">
-                <div class="hologram">
-                    <div class="holo-ring"></div>
-                    <div class="holo-ring"></div>
-                    <div class="holo-ring"></div>
-                    <div class="holo-core">F.R.R.V.I.S</div>
-                </div>
-            </div>
-            <div class="start-text">F.R.I.D.A.Y. online. Waiting for commands.</div>
+            <div class="arc-reactor"></div>
+            <div class="system-text">System Online</div>
         </div>
 
         <div id="n8n-chat"></div>
@@ -222,121 +197,43 @@
     <script type="module">
         import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-        const chat = createChat({
+        createChat({
             webhookUrl: 'https://mathemeister.app.n8n.cloud/webhook/ab934e3f-02a0-485d-b08e-e9dc7f823397/chat',
             target: '#n8n-chat',
             mode: 'fullscreen',
             showWelcomeScreen: false,
             initialMessages: [
-                // Die erste Nachricht kommt vom Bot. Wir können hier auch dynamisch was einfügen.
+                // Leer lassen, damit der Bot startet
             ],
             i18n: {
                 en: {
                     title: '',
                     subtitle: '',
-                    inputPlaceholder: 'Befehl eingeben...',
-                    getStarted: 'Start',
+                    inputPlaceholder: 'Befehl an F.R.I.D.A.Y. ...',
+                    getStarted: 'Verbinden',
                 },
             },
         });
 
-        // --- Start Screen Logik ---
+        // Logik zum Ausblenden des Logos bei Aktivität
         const startScreen = document.getElementById('start-screen');
-        let isChatActive = false;
-
-        // Funktion zum Ausblenden des Startscreens
-        function hideStartScreen() {
-            if (!isChatActive) {
-                startScreen.classList.add('hidden');
-                isChatActive = true;
-                // Nach der Transition ganz entfernen, um Ressourcen zu sparen
-                setTimeout(() => {
-                    startScreen.style.display = 'none';
-                }, 800);
-            }
-        }
-
-        // Überwache, ob eine Nachricht gesendet oder empfangen wird
-        // Da n8n keine direkten Events dafür bietet, nutzen wir einen MutationObserver
         const observer = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    // Prüfe, ob das hinzugefügte Element eine Nachricht ist
-                    const addedNode = mutation.addedNodes[0];
-                    if (addedNode.classList && (addedNode.classList.contains('chat-message') || addedNode.querySelector('.chat-message'))) {
-                        hideStartScreen();
-                        observer.disconnect(); // Nicht mehr nötig
-                        return;
+                if (mutation.addedNodes.length > 0) {
+                    // Sobald irgendein Chat-Element erscheint (User oder Bot)
+                    if (document.querySelector('.chat-message')) {
+                        startScreen.classList.add('hidden');
+                        observer.disconnect();
                     }
                 }
             }
         });
 
-        // Starte die Überwachung auf dem Chat-Container, sobald er geladen ist
         setTimeout(() => {
-             const chatContainer = document.querySelector('.chat-container .chat-list');
-             if (chatContainer) {
-                 observer.observe(chatContainer, { childList: true, subtree: true });
-             }
+             const container = document.querySelector('#n8n-chat');
+             if (container) observer.observe(container, { childList: true, subtree: true });
         }, 1000);
 
-
-        // --- THEME OVERRIDES ---
-        setTimeout(() => {
-            const root = document.documentElement;
-            
-            // Backgrounds & Text
-            root.style.setProperty('--chat--color-light', '#ffffff');
-            root.style.setProperty('--chat--color-dark', '#0a0a12');
-            root.style.setProperty('--chat--color-secondary', '#a0a0b0');
-            
-            // Header & Layout (transparent)
-            root.style.setProperty('--chat--header--background', 'transparent');
-            root.style.setProperty('--chat--header--color', 'transparent');
-            root.style.setProperty('--chat--container--background', 'transparent');
-            
-            // Bot Messages (Dunkel mit lila Akzent)
-            root.style.setProperty('--chat--message--bot--background', 'rgba(138, 43, 226, 0.15)');
-            root.style.setProperty('--chat--message--bot--color', '#ffffff');
-            root.style.setProperty('--chat--message--bot--border', '1px solid rgba(138, 43, 226, 0.3)');
-            root.style.setProperty('--chat--message--bot--avatar--background', '#8A2BE2');
-
-            // User Messages (Heller, bläulicher Akzent)
-            root.style.setProperty('--chat--message--user--background', 'rgba(65, 105, 225, 0.25)');
-            root.style.setProperty('--chat--message--user--color', '#ffffff');
-            root.style.setProperty('--chat--message--user--border', '1px solid rgba(65, 105, 225, 0.4)');
-
-            // Input Area (Glassmorphism Style)
-            root.style.setProperty('--chat--input--background', 'rgba(10, 10, 18, 0.6)');
-            root.style.setProperty('--chat--input--color', '#ffffff');
-            root.style.setProperty('--chat--input--border', '1px solid rgba(255, 255, 255, 0.1)');
-            root.style.setProperty('--chat--toggle--background', '#8A2BE2');
-            root.style.setProperty('--chat--toggle--color', '#ffffff');
-            root.style.setProperty('--chat--toggle--hover--background', '#9932CC');
-
-            // Allgemeine Anpassungen für einen "Tech"-Look
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .chat-message {
-                    border-radius: 4px !important;
-                    backdrop-filter: blur(5px);
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                }
-                .chat-input-container {
-                    backdrop-filter: blur(10px);
-                    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-                }
-                .chat-input {
-                    border-radius: 4px !important;
-                }
-                .chat-toggle {
-                    border-radius: 4px !important;
-                    box-shadow: 0 0 10px rgba(138, 43, 226, 0.4);
-                }
-            `;
-            document.head.appendChild(style);
-
-        }, 100);
     </script>
 </body>
 </html>
