@@ -2,8 +2,8 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>F.R.I.D.A.Y. | MK II</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>F.R.I.D.A.Y. | MK III</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         /* --- STARK INDUSTRIES THEME --- */
@@ -11,11 +11,8 @@
             --bg-color: #000000;
             --primary-cyan: #00F0FF;
             --secondary-blue: #0075FF;
-            --alert-red: #FF3333;
             --text-main: #FFFFFF;
-            --text-dim: #888888;
             --glass-panel: rgba(0, 240, 255, 0.05);
-            --border-glow: 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -25,10 +22,14 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Rajdhani', sans-serif;
-            height: 100dvh;
+            
+            /* Layout Magic für Mobile */
+            height: 100dvh; /* Dynamic Viewport Height */
+            width: 100vw;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Verhindert Scrollen des ganzen Body */
+            
             background-image: 
                 radial-gradient(circle at 50% 50%, rgba(0, 30, 60, 0.4) 0%, #000 70%),
                 linear-gradient(0deg, rgba(0,240,255,0.03) 1px, transparent 1px),
@@ -36,15 +37,16 @@
             background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER (Fixiert oben) --- */
         header {
+            flex-shrink: 0; /* Darf nicht kleiner werden */
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
             z-index: 100;
         }
 
@@ -67,15 +69,16 @@
             animation: pulse 3s infinite;
         }
 
-        /* --- CHAT AREA --- */
+        /* --- CHAT AREA (Scrollbar in der Mitte) --- */
         #chat-container {
-            flex: 1;
-            overflow-y: auto;
+            flex-grow: 1; /* Nimmt den restlichen Platz ein */
+            overflow-y: auto; /* Nur dieser Bereich scrollt */
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Flüssiges Scrollen auf iOS */
         }
 
         .message {
@@ -88,7 +91,6 @@
             word-wrap: break-word;
         }
 
-        /* Bot Message Style */
         .message.bot {
             align-self: flex-start;
             background: rgba(0, 117, 255, 0.1);
@@ -106,7 +108,6 @@
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* User Message Style */
         .message.user {
             align-self: flex-end;
             background: rgba(0, 240, 255, 0.15);
@@ -117,14 +118,17 @@
             text-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
 
-        /* --- INPUT AREA --- */
+        /* --- INPUT AREA (Fixiert unten durch Flexbox) --- */
         .input-area {
+            flex-shrink: 0; /* Darf nicht zerquetscht werden */
             padding: 15px;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             border-top: 1px solid rgba(0, 240, 255, 0.2);
             display: flex;
             gap: 10px;
-            position: relative;
+            
+            /* iOS Safe Area Fix (für iPhone X und neuer) */
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
         }
 
         input[type="text"] {
@@ -135,7 +139,7 @@
             padding: 12px 15px;
             border-radius: 4px;
             font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
+            font-size: 16px; /* WICHTIG: 16px verhindert Auto-Zoom auf iPhones */
             transition: all 0.3s;
         }
 
@@ -155,24 +159,23 @@
             cursor: pointer;
             border-radius: 2px;
             clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            transition: transform 0.1s, box-shadow 0.3s;
+            height: 44px; /* Gute Touch-Größe */
         }
 
         button#send-btn:active { transform: scale(0.95); }
         button#send-btn:disabled { background: #333; color: #666; cursor: wait; }
 
-        /* --- TYPING INDICATOR --- */
         .typing {
             display: none;
             align-self: flex-start;
             color: var(--secondary-blue);
             font-size: 0.8rem;
-            margin-left: 10px;
+            margin-left: 20px;
+            margin-bottom: 5px;
             font-style: italic;
             animation: blink 1s infinite;
         }
 
-        /* --- ANIMATIONS --- */
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
@@ -186,7 +189,7 @@
             <div class="status-indicator"></div>
             F.R.I.D.A.Y.
         </div>
-        <div style="font-size: 0.7rem; color: var(--primary-cyan); opacity: 0.7;">MK II // ONLINE</div>
+        <div style="font-size: 0.7rem; color: var(--primary-cyan); opacity: 0.7;">MK III // MOBILE READY</div>
     </header>
 
     <div id="chat-container">
@@ -201,11 +204,10 @@
     </div>
 
     <script>
-        // 1. KONFIGURATION
-        // Hier deine NEUE Webhook URL (POST) einfügen
+        // --- DEINE URL HIER EINTRAGEN ---
         const WEBHOOK_URL = 'https://mathemeister.app.n8n.cloud/webhook/friday'; 
+        // --------------------------------
 
-        // Generiere eine zufällige Session ID für das Gedächtnis
         const sessionId = 'session-' + Math.random().toString(36).substr(2, 9);
         
         const chatContainer = document.getElementById('chat-container');
@@ -213,53 +215,46 @@
         const sendBtn = document.getElementById('send-btn');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        // Funktion: Nachricht zum Chat hinzufügen
         function addMessage(text, sender) {
             const div = document.createElement('div');
             div.classList.add('message', sender);
             
-            // Markdown-ähnliches Parsing für Links und Fettgedrucktes (Basic)
             let formattedText = text
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-                .replace(/\n/g, '<br>'); // Newlines
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
 
             div.innerHTML = formattedText;
             chatContainer.appendChild(div);
-            
-            // Automatisch nach unten scrollen
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Funktion: Nachricht senden
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
-            // 1. User Nachricht anzeigen
             addMessage(text, 'user');
             userInput.value = '';
             
-            // 2. UI sperren & Ladeanzeige
             userInput.disabled = true;
             sendBtn.disabled = true;
             typingIndicator.style.display = 'block';
+            scrollToBottom(); // Scrollen, damit User Nachricht sichtbar bleibt
 
             try {
-                // 3. Request an n8n senden
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        chatInput: text, // So nennt n8n das oft standardmäßig
+                        chatInput: text, 
                         sessionId: sessionId 
                     })
                 });
 
                 const data = await response.json();
-
-                // 4. Antwort anzeigen
-                // Hinweis: Je nachdem wie dein "Respond to Webhook" Node konfiguriert ist,
-                // heißt das Feld "output", "text" oder "message". Prüfe das!
                 const botReply = data.output || data.text || JSON.stringify(data);
                 addMessage(botReply, 'bot');
 
@@ -267,19 +262,25 @@
                 console.error('Error:', error);
                 addMessage("Verbindungsfehler zu Stark Industries Servern.", 'bot');
             } finally {
-                // 5. UI wieder freigeben
                 userInput.disabled = false;
                 sendBtn.disabled = false;
                 typingIndicator.style.display = 'none';
-                userInput.focus();
+                userInput.focus(); // Fokus zurück ins Feld
+                scrollToBottom();
             }
         }
 
-        // Event Listeners
         sendBtn.addEventListener('click', sendMessage);
         
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
+        });
+
+        // Verhindert, dass iOS beim Tippen reinzoomt (passiert oft bei <16px Schrift)
+        const metaViewport = document.querySelector('meta[name=viewport]');
+        userInput.addEventListener('focus', () => {
+             // Optionaler Hook, falls du spezielle Logik beim Tastatur-Öffnen brauchst
+             setTimeout(scrollToBottom, 300); 
         });
 
     </script>
