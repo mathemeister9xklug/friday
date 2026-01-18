@@ -2,130 +2,103 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F.R.I.D.A.Y. | Stark Industries</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>F.R.I.D.A.Y. Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
     <style>
         :root {
-            --neon-blue: #00f3ff;
-            --dark-bg: #050505;
-            --glass: rgba(0, 243, 255, 0.05);
-            --border-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+            --bg-color: #000000;
+            --chat-bg: #0a0a0a;
+            --accent-color: #00E5FF; /* Stark Blue/Cyan */
+            --text-color: #ffffff;
+            --user-msg-bg: #1a1a1a;
+            --bot-msg-bg: #000000;
+            --border-color: #333333;
         }
 
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            background-color: var(--dark-bg);
-            color: var(--neon-blue);
-            font-family: 'Share Tech Mono', monospace;
-            height: 100vh;
-            overflow: hidden;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
+            width: 100%;
+            height: 100dvh; /* Dynamic Height für Mobile Browser Bars */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden; /* Verhindert Scrollen der ganzen Seite */
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- HUD Layout --- */
-        .hud-container {
+        .app-container {
             display: flex;
             flex-direction: column;
             height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
+            max-width: 800px; /* Begrenzt die Breite auf großen Screens für Lesbarkeit */
+            margin: 0 auto;
             position: relative;
+            background-color: var(--chat-bg);
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
         }
 
+        /* --- Minimalist Header --- */
         .header {
+            padding: 15px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--neon-blue);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.2);
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .status {
-            font-size: 14px;
-            animation: blink 2s infinite;
-        }
-
-        /* --- Scanning Line Effect --- */
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: rgba(0, 243, 255, 0.3);
-            animation: scan 4s linear infinite;
-            pointer-events: none;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
             z-index: 10;
-            opacity: 0.3;
         }
 
-        /* --- Chat Embed Styling Overrides --- */
+        .brand {
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-color);
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-color);
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        /* --- Chat Area --- */
         #n8n-chat {
-            flex-grow: 1;
-            border: 1px solid var(--neon-blue);
-            box-shadow: var(--border-glow);
-            background: var(--glass);
-            border-radius: 10px;
-            overflow: hidden;
+            flex: 1;
             position: relative;
+            background: transparent;
         }
 
-        /* Wir müssen warten, bis das n8n CSS lädt, aber wir können den Container stylen */
-        
-        @keyframes scan {
-            0% { top: -10%; }
-            100% { top: 110%; }
+        @keyframes breathe {
+            0%, 100% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* Mobile Fixes */
+        @media (max-width: 600px) {
+            .app-container {
+                border: none;
+            }
         }
-
-        .corner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--neon-blue);
-        }
-        .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
-        .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
-        .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
-        .br { bottom: 0; right: 0; border-left: none; border-top: none; }
-
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 </head>
 <body>
 
-    <div class="scan-line"></div>
-
-    <div class="hud-container">
+    <div class="app-container">
         <div class="header">
-            <div class="logo">F.R.I.D.A.Y. <span style="font-size:12px">MK I</span></div>
-            <div class="status">SYSTEM ONLINE /// CONNECTED TO SUPABASE</div>
+            <div class="brand">F.R.I.D.A.Y.</div>
+            <div class="status-dot"></div>
         </div>
-
-        <div id="n8n-chat">
-            <div class="corner tl"></div>
-            <div class="corner tr"></div>
-            <div class="corner bl"></div>
-            <div class="corner br"></div>
-        </div>
+        
+        <div id="n8n-chat"></div>
     </div>
 
     <script type="module">
@@ -134,42 +107,48 @@
         createChat({
             webhookUrl: 'https://mathemeister.app.n8n.cloud/webhook/ab934e3f-02a0-485d-b08e-e9dc7f823397/chat',
             target: '#n8n-chat',
-            mode: 'fullscreen', // Füllt das Div aus
-            showWelcomeScreen: true,
+            mode: 'fullscreen',
+            showWelcomeScreen: false, // Cleaner ohne Welcome Screen
             initialMessages: [
-                'System Reboot successful.',
-                'F.R.I.D.A.Y. online. Waiting for instructions, Boss.'
+                'Verbindung steht. Was liegt an, Boss?'
             ],
             i18n: {
                 en: {
-                    title: 'F.R.I.D.A.Y.',
-                    subtitle: 'Stark Industries',
-                    footer: 'Secure Connection',
-                    getStarted: 'Initialize Protocol',
-                    inputPlaceholder: 'Command...',
+                    title: '', // Titel leer lassen, wir haben unseren eigenen Header
+                    subtitle: '',
+                    inputPlaceholder: 'Befehl eingeben...',
+                    getStarted: 'Start',
                 },
             },
-            style: {
-                width: '100%',
-                height: '100%',
-                position: 'relative',
-                backgroundColor: 'transparent',
-                fontFamily: 'Share Tech Mono',
-            }
         });
 
-        // HACK: Überschreibe n8n Farben mit CSS Variables nach dem Laden
+        // --- THEME OVERRIDES ---
+        // Wir injizieren die Farben direkt in die n8n Variablen für perfekten Match
         setTimeout(() => {
             const root = document.documentElement;
-            root.style.setProperty('--chat--color-primary', '#00f3ff');
-            root.style.setProperty('--chat--color-secondary', '#050505');
-            root.style.setProperty('--chat--color-light', '#ffffff');
-            root.style.setProperty('--chat--color-dark', '#0b0b0b');
-            root.style.setProperty('--chat--message--bot--background', 'rgba(0, 243, 255, 0.1)');
-            root.style.setProperty('--chat--message--bot--color', '#00f3ff');
-            root.style.setProperty('--chat--message--user--background', 'rgba(255, 255, 255, 0.1)');
+            
+            // Backgrounds
+            root.style.setProperty('--chat--color-light', '#ffffff'); // Textfarbe Input
+            root.style.setProperty('--chat--color-dark', '#000000');
+            
+            // Header & Layout (transparent machen, da wir eigenen Header haben)
             root.style.setProperty('--chat--header--background', 'transparent');
-            root.style.setProperty('--chat--header--color', '#00f3ff');
+            root.style.setProperty('--chat--header--color', 'transparent'); 
+            
+            // Bot Messages (Stark Industries Style: Minimal Left)
+            root.style.setProperty('--chat--message--bot--background', '#1a1a1a');
+            root.style.setProperty('--chat--message--bot--color', '#e0e0e0');
+            
+            // User Messages (Stark Industries Style: Accent Right)
+            root.style.setProperty('--chat--message--user--background', '#00E5FF'); 
+            root.style.setProperty('--chat--message--user--color', '#000000');
+            
+            // Input Area
+            root.style.setProperty('--chat--input--background', '#0a0a0a');
+            root.style.setProperty('--chat--input--color', '#ffffff');
+            root.style.setProperty('--chat--toggle--background', '#00E5FF'); // Send Button
+            root.style.setProperty('--chat--toggle--color', '#000000');
+            
         }, 100);
     </script>
 </body>
